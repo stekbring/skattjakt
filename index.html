@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Olles Skattjakt</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 150px;
+      background-color: #343541;
+      color: white;
+    }
+    h1 {
+      font-size: 55px;
+      margin-bottom: 100px;
+    }
+    h2 {
+      font-size: 40px;
+      margin-bottom: 20px;
+    }
+    .button {
+      display: block;
+      width: 350px;
+      margin: 40px auto;
+      padding: 20px 0;
+      background-color: #555656;
+      border: none;
+      text-decoration: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 50px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .button:hover {
+      background-color: #3b3b3b;
+    }
+    .small-text {
+      font-size: 25px;
+      color: #ccc;
+      display: block;
+      margin-top: 9px;
+      font-weight: normal;
+    }
+    #content {
+      display: none;
+    }
+    #countdown-label {
+      font-size: 40px;
+      margin-bottom: 150px;
+      color: white;
+    }
+    #countdown {
+      font-size: 100px;
+      color: #ff2b2b;
+      margin-bottom: 150px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Välkommen till Olles Skattjakt</h1>
+  <h2 id="countdown-label">Startar om:</h2>
+  <div id="countdown">Laddar...</div>
+
+  <div id="content">
+    <h2>Välj ditt lag för att börja</h2>
+
+    <button class="button" onclick="väljLag('lag1'); window.location.href='https://stekbring.github.io/lag1'">
+      Lag 1<br>
+      <span class="small-text">Vestman  -  Malou  -  Felicia</span>
+    </button>
+    <button class="button" onclick="väljLag('lag2'); window.location.href='https://stekbring.github.io/lag2'">
+      Lag 2<br>
+      <span class="small-text">Olle A - Malte - Alexander</span>
+    </button>
+    <button class="button" onclick="väljLag('lag3'); window.location.href='https://stekbring.github.io/lag3'">
+      Lag 3<br>
+      <span class="small-text">Lukas - Mira - Nathalie</span>
+    </button>
+    <button class="button" onclick="väljLag('lag4'); window.location.href='https://stekbring.github.io/lag4'">
+      Lag 4<br>
+      <span class="small-text">Emma - Thelma - Signe</span>
+    </button>
+  </div>
+
+  <script>
+    function väljLag(lag) {
+      localStorage.setItem('valdtLag', lag);
+    }
+
+    const unlockTime = new Date("2025-06-20T17:45:00");
+
+    const countdownEl = document.getElementById("countdown");
+    const contentEl = document.getElementById("content");
+    const labelEl = document.getElementById("countdown-label");
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = unlockTime - now;
+
+      if (diff <= 0) {
+        labelEl.style.display = "none";
+        countdownEl.style.display = "none";
+        contentEl.style.display = "block";
+        clearInterval(interval);
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    }
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+  </script>
+
+</body>
+</html>

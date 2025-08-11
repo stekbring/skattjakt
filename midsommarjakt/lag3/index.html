@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Ljudtest - Olles Skattjakt</title>
+  <style>
+  body {
+    font-family: sans-serif;
+    background-color: #343541;
+    color: white;
+    text-align: center;
+    padding: 100px; /* minska padding från 300 */
+  }
+  h1 {
+    font-size: 60px; /* gör rubriken större */
+    margin-bottom: 40px;
+  }
+  audio {
+    width: 100%;
+    max-width: 500px;
+    margin-bottom: 30px;
+  }
+  button {
+    background-color: #555656;
+    color: white;
+    border: none;
+    padding: 15px 30px;  /* större knapp */
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 30px;     /* större text på knappen */
+    margin-bottom: 30px;
+  }
+  input[type="range"] {
+    width: 500px;
+    max-width: 90vw;
+    height: 15px;        /* tjockare slider */
+    background: #555656;
+    border-radius: 8px;
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 30px;
+  height: 30px;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid #343541;
+  margin-top: -1px; /* exakt centrerad vertikalt */
+}
+input[type="range"]::-moz-range-thumb {
+  width: 30px;
+  height: 30px;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 50%;
+  border: 2px solid #343541;
+  margin-top: -7.5px; /* exakt centrerad vertikalt */
+}
+
+</style>
+
+</head>
+<body>
+
+  <h1>Ledtråd 1</h1>
+
+  <audio id="audio" src="klocka.mp3"></audio>
+
+  <button id="playPauseBtn">Play</button><br/>
+
+  <input type="range" id="progress" min="0" max="100" value="0" step="0.1" />
+
+  <script>
+    const audio = document.getElementById('audio');
+    const playPauseBtn = document.getElementById('playPauseBtn');
+    const progress = document.getElementById('progress');
+
+    // Spela/pausa
+    playPauseBtn.addEventListener('click', () => {
+      if (audio.paused) {
+        audio.play();
+        playPauseBtn.textContent = 'Pause';
+      } else {
+        audio.pause();
+        playPauseBtn.textContent = 'Play';
+      }
+    });
+
+    // Uppdatera slider medan ljudet spelas
+    audio.addEventListener('timeupdate', () => {
+      const value = (audio.currentTime / audio.duration) * 100;
+      progress.value = value || 0;
+    });
+
+    // Spola ljudet när man drar slider
+    progress.addEventListener('input', () => {
+      audio.currentTime = (progress.value / 100) * audio.duration;
+    });
+
+    // När ljudet tar slut, återställ knapptext
+    audio.addEventListener('ended', () => {
+      playPauseBtn.textContent = 'Play';
+      progress.value = 0;
+    });
+  </script>
+
+</body>
+</html>

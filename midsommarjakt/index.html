@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Olles Skattjakt</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      margin-top: 150px;
+      background-color: #343541;
+      color: white;
+    }
+    h1 {
+      font-size: 48px;
+      margin-bottom: 70px;
+    }
+    h2 {
+      font-size: 35px;
+      margin-bottom: 70px;
+    }
+    .button {
+      display: block;
+      width: 200px;
+      margin: 40px auto;
+      padding: 35px 0;
+      background-color: #555656;
+      border: none;
+      text-decoration: none;
+      border-radius: 8px;
+      color: white;
+      font-size: 40px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .button:hover {
+      background-color: #3b3b3b;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Välkommen till Olles Skattjakt</h1>
+  <h2>Välj ditt lag för att börja</h2>
+
+  <button class="button" onclick="väljLag('lag1'); window.location.href='https://stekbring.github.io/midsommarjakt/lag1'">
+    Lag 1
+  </button>
+  <button class="button" onclick="väljLag('lag2'); window.location.href='https://stekbring.github.io/midsommarjakt/lag2'">
+    Lag 2
+  </button>
+  <button class="button" onclick="väljLag('lag3'); window.location.href='https://stekbring.github.io/midsommarjakt/lag3'">
+    Lag 3
+  </button>
+
+  <script>
+    function väljLag(lag) {
+      localStorage.setItem('valdtLag', lag);
+    }
+  </script>
+
+</body>
+</html>
