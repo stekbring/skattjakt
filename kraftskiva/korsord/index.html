@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+    <title>Korsord - Kräftskiva</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #343541;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1px;
+            margin-bottom: 30px;
+        }
+        .row {
+            display: flex;
+            align-items: center;
+        }
+        /* Ta bort den gamla row-number-stilen då numret hamnar i en cell */
+        .cell input {
+            width: 1.8em;
+            height: 1.8em;
+            font-size: 1.2em;
+            text-align: center;
+            border: 1px solid #333;
+            background-color: white;
+            border-radius: 0;
+            margin-right: 0.4em;
+            text-transform: uppercase;
+        }
+        .highlight input {
+            background-color: #ffe066;
+        }
+        .cell {
+            width: 2.2em;
+            height: 2.2em;
+            margin-right: 0.4em;
+            margin-bottom: 0em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            background-color: #343541;
+            color: white;
+            user-select: none;
+        }
+        /* Klass för numrerceller */
+        .number-cell {
+            font-size: 1.1em;
+        }
+        .clue-list {
+            margin-top: 20px;
+            max-width: 600px;
+        }
+        h1 {
+            color: #ffffff;
+            font-size: 40px;
+        }
+        h2 {
+            color: #ffffff;
+            font-size: 40px;
+            margin-left: 150px;
+        }
+        p {
+            color: #ffffff;
+            font-size: 20px;
+            margin-bottom: 50px;
+        }
+        li {
+                font-size: 18px;
+                margin-left: 50px;
+        }
+
+        @media (max-width: 600px) {
+            .cell input, .cell {
+                width: 1em;
+                height: 1.4em;
+                font-size: 1em;
+            }
+            .cell {
+                width: 2em;
+                height: 2em;
+                margin-right: 0em;
+                margin-bottom: 0em;
+            }
+            /* Minska fontstorlek på numrerceller i mobil */
+            .number-cell {
+                font-size: 1em;
+                margin-right: 0.5em;
+            }
+            h1 {
+                font-size: 30px;
+            }
+            h2 {
+                font-size: 18px;
+            }
+            p {
+                font-size: 18px;
+            }
+            li {
+                font-size: 15px;
+                margin-left: 20px;
+            }
+            body {
+                padding: 10px;
+                transform: scale(0.75);
+                transform-origin: top;
+            }
+            .clue-list {
+                max-width: 100%;
+            }
+        }
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+                background-color: white !important;
+                color: black !important;
+            }
+
+            /* Se till att siffrorna bredvid cellerna syns */
+            /* Se till att siffrorna bredvid cellerna syns vid utskrift */
+            .number-cell {
+                display: inline-block !important; /* säkerställ block/inline-block */
+                color: black !important;
+                background-color: white !important;
+                border: none !important;
+                font-weight: bold !important;
+            }
+
+            .number-cell span {
+                color: black !important;
+                background-color: white !important;
+            }
+            /* Alla vanliga celler */
+            .cell {
+                background-color: #ffffff !important;
+                color: black !important;
+                border: 1px solid black !important;
+            }
+
+            /* Cell med input */
+            .cell input {
+                background-color: white !important;
+                color: black !important;
+                border: 1px solid black !important;
+            }
+
+            /* Markerade celler */
+            .highlight, .highlight input {
+                background-color: #d8d8d8 !important;
+                color: black !important;
+            }
+
+            /* Dölja oanvända/extra celler */
+            .cell.hidden, .cell.dummy {
+                display: none !important;
+            }
+
+            /* Rubriker och ledtrådar */
+            h1, h2, p, li {
+                color: black !important;
+            }
+        }
+
+
+    </style>
+</head>
+<body>
+    <h1>Kräftkorsning</h1>
+    <p></p>
+    
+
+    <div class="grid" id="grid"></div>
+
+    <div class="clue-list">
+        <h2>Ledtrådar</h2>
+        <ol>
+            <li>Vem är bäst på skattjakter?</li>
+            <li>Martins främsta färdmedel</li>
+            <li>Kan man bli hos Putte Lundin</li>
+            <li>Minus tre</li>
+            <li>Vad heter den ökände gäddan som kanal dyr sprängde?</li>
+            <li>Åseda för länge länge sedan</li>
+            <li>Berg i Sagan om ringen</li>
+            <li>Vem avnjuter en golden shower hemma hos Mira?</li>
+            <li>Plus fyrtiosju</li>
+            <li>Fågel som barrar på hösten</li>
+            <li>Ringbärare</li>
+            <li>EXC563</li>
+            <li>Genomskinlig sten</li>
+            <li>Vad heter kanalen som tillhör tre av de bästa fiskarna i sverige?</li>
+            <li>Kan man ta på en skida</li>
+            <li>Är det hos Felicia på fest</li>
+            <li>Kärring från lilla sjöjungfrun</li>
+            <li>Oäkting i Game of Thrones</li>
+            <li>Oäkting i Game of Thrones</li>
+        </ol>
+    </div>
+
+    <script>
+        const grid = document.getElementById("grid");
+        const allInputs = [];
+
+        // Nu med numberOffset för att styra positionen för siffran i raden
+        const rows = [
+            { len: 7, clueIndex: 2, startPos: 12, numberOffset: 11 },
+            { len: 7, clueIndex: 5, startPos: 9, numberOffset: 8 },
+            { len: 6, clueIndex: 3, startPos: 11, numberOffset: 10 },
+            { len: 5, clueIndex: 2, startPos: 12, numberOffset: 11 },
+            { len: 22, clueIndex: 13, startPos: 0, numberOffset: 0 },
+            { len: 13, clueIndex: 0, startPos: 14, numberOffset: 13 }, 
+            { len: 13, clueIndex: 5, startPos: 9, numberOffset: 8 },
+            { len: 7, clueIndex: 3, startPos: 11, numberOffset: 10 },
+            { len: 11, clueIndex: 6, startPos: 8, numberOffset: 7 },
+            { len: 6, clueIndex: 1, startPos: 13, numberOffset: 12 },
+            { len: 6, clueIndex: 3, startPos: 11, numberOffset: 10 },
+            { len: 3, clueIndex: 0, startPos: 14, numberOffset: 13 },
+            { len: 4, clueIndex: 2, startPos: 12, numberOffset: 11 },
+            { len: 8, clueIndex: 1, startPos: 13, numberOffset: 12 },
+            { len: 5, clueIndex: 0, startPos: 14, numberOffset: 13 },
+            { len: 7, clueIndex: 2, startPos: 12, numberOffset: 11 },
+            { len: 7, clueIndex: 2, startPos: 12, numberOffset: 11 },
+            { len: 10, clueIndex: 3, startPos: 11, numberOffset: 10 },
+            { len: 4, clueIndex: 1, startPos: 13, numberOffset: 12 }
+        ];
+
+        rows.forEach((row, rowIndex) => {
+            const rowDiv = document.createElement("div");
+            rowDiv.classList.add("row");
+
+            // Lägg till tomma celler före siffran
+            for(let i=0; i < row.numberOffset; i++) {
+                const emptyCell = document.createElement("div");
+                emptyCell.classList.add("cell");
+                rowDiv.appendChild(emptyCell);
+            }
+
+            // Skapa cell med siffra (placerad i ruta)
+            const numberCell = document.createElement("div");
+            numberCell.classList.add("cell", "number-cell");  // <-- Här lägger vi till klass
+            numberCell.innerText = `${rowIndex + 1}.`;
+            rowDiv.appendChild(numberCell);
+
+            // Lägg till tomma celler mellan siffran och startPos (om det behövs)
+            for(let i = row.numberOffset + 1; i < row.startPos; i++) {
+                const emptyCell = document.createElement("div");
+                emptyCell.classList.add("cell");
+                rowDiv.appendChild(emptyCell);
+            }
+
+            // Lägg till bokstavsrutorna
+            for(let i=0; i < row.len; i++) {
+                const cell = document.createElement("div");
+                const input = document.createElement("input");
+                cell.classList.add("cell");
+                if(i === row.clueIndex) {
+                    cell.classList.add("highlight");
+                }
+                cell.appendChild(input);
+                rowDiv.appendChild(cell);
+                allInputs.push(input);
+            }
+
+            grid.appendChild(rowDiv);
+        });
+
+        allInputs.forEach((input, index) => {
+            input.addEventListener("input", function () {
+                this.value = this.value.toUpperCase();
+                if (this.value.length === 1 && index < allInputs.length - 1) {
+                    allInputs[index + 1].focus();
+                }
+            });
+            input.addEventListener("keydown", function (e) {
+                if (e.key === "Backspace" && this.value === "" && index > 0) {
+                    allInputs[index - 1].focus();
+                }
+            });
+        });
+    // Funktion för att spara alla inputs i localStorage
+        function saveInputs() {
+            allInputs.forEach((input, i) => {
+                localStorage.setItem('input_' + i, input.value);
+            });
+        }
+
+        // Funktion för att ladda alla inputs från localStorage
+        function loadInputs() {
+            allInputs.forEach((input, i) => {
+                const savedValue = localStorage.getItem('input_' + i);
+                if (savedValue) {
+                    input.value = savedValue;
+                }
+            });
+        }
+
+        // Anropa loadInputs när sidan laddas
+        window.addEventListener('load', loadInputs);
+
+        // Spara input-värde vid varje förändring
+        allInputs.forEach((input) => {
+            input.addEventListener('input', saveInputs);
+        });
+
+    </script>
+</body>
+</html>
